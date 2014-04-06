@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>
+<title>Treasure Party</title>
+<link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/fancyInput.css">
+<script src='js/jquery.js'></script>
+<script src='js/bootstrap.js'></script>
+<script src='js/quintus.js'></script>
+<script src='js/quintus_sprites.js'></script>
+<script src='js/quintus_scenes.js'></script>
+<script src='js/quintus_input.js'></script>
+<script src='js/quintus_anim.js'></script>
+<script src='js/quintus_2d.js'></script>
+<script src='js/quintus_touch.js'></script>
+<script src='js/quintus_ui.js'></script>
+<script src='js/quintus_tmx.js'></script>
+<script src='js/quintus_audio.js'></script>
+
+<script src='js/app.js'></script>
+<script src='js/firebase.js'></script>  
+<style> 
+  body { padding:0px; margin:0px; background-color: rgb(50,50,50); } 
+  canvas { background-color:black; }
+</style>
+</head>
+<body>
+
+  <div class="jumbotron" id="title">
+    <h1><img src="images/title.png"></h1>
+  </div>
+  <div class="input" id="namebox">
+    <div class="fancyInput">
+      <input id='name' type="text" placeholder="Your Name Here">
+    </div>
+  </div>
+  <div  id="about" style=" margin-top:100px; width:150px; margin-left:auto; margin-right:auto; background-color: rgb(50,50,50);">
+    
+    <a href="about.html"><div style="border-color:rgb(100,100,100); color:rgb(100,100,100); font-family:'Fjalla One'; font-size:20px; background-color: rgb(40,40,40);"class="btn btn-default">About</div></a>
+  </div>
+  <div class="container nopadding">
+    <div class="row nopadding">
+      <div id="console">
+        <!-- top body -->
+        <div id="canvas_game">
+          <canvas id="game"> </canvas>
+        </div>
+      </div>
+      <div  id="playerHP" class="progress progress-striped active">
+        <div id= "playerHPBar" class="progress-bar"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+        </div>
+      </div>
+      <div  id="opponentHP" class="progress progress-striped active">
+        <div id="opponentHPBar" class="progress-bar"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src='js/fancyInput.js'></script>
+  <script>
+    $('#game').hide();
+    $('div :input').fancyInput();
+  </script>
+
+  <script>
+    var slumberUsersRef = new Firebase('https://treasure.firebaseIO.com/users');
+    var playerName = '';
+    var UUID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
+    document.getElementById('name').onkeypress = function(e){
+    if (!e) e = window.event;
+    var keyCode = e.keyCode || e.which;
+    if (keyCode == '13'){
+      playerName = document.getElementById('name').value.toString();
+      var con = slumberUsersRef.push({'name': playerName, 'UUID': UUID});
+      con.onDisconnect().remove();
+      $('#namebox').hide();
+      $('#title').hide();
+      $('#about').hide();
+      $('#game').show();
+      return false;
+    }
+  }
+  </script>
+  
+
+</body>
+</html>
