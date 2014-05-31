@@ -1,21 +1,29 @@
 
 var Game = {
 	display: null,
+	engine: null,
+	player: null,
+	map: {},
+
 	init: function() {
 		ROT.DEFAULT_WIDTH = 100;
 		ROT.DEFAULT_HEIGHT = 50;
 		this.display = new ROT.Display();
 		document.body.appendChild(this.display.getContainer());
 		this._generateMap();
+
+		var scheduler = new ROT.Scheduler.Simple();
+		scheduler.add(this.player, true);
+		this.engine = new ROT.Engine(scheduler);
+		this.engine.start();
+
+
 	}
 }
 
 
 
-Game.player = null;
 
-
-Game.map = {};
 Game._generateMap = function() {
 	var digger = new ROT.Map.Digger();
 	var freeCells = [];
@@ -65,6 +73,42 @@ Player.prototype._draw = function() {
 	Game.display.draw(this._x, this._y, "@", "#ff0");
 }
 
+Player.prototype.act = function() {
+	Game.engine.lock();
+	//waiting for the user to input something
+	window.addEventListener("keydown", this);
+}
+
+Player.prototype.handleEvent = function(e) {
+	var keyMap = {};
+	keyMap[ROT.VK_UP] = 0;
+	keyMap[ROT.VK_RIGHT] = 1;
+	keyMap[ROT.VK_LEFT] = 3;
+	keyMap[ROT.VK_DOWN] = 2;
+
+	var code = e.keyCode;
+
+	//Only take valid keys
+	if (!(code in keyMap)) {
+		return;
+	}
+
+	//Get the change in x, y after input
+	var diff = ROT.DIRS[4][keyMap[code]];
+	var newX = this._x + diff[0];
+	var newY = this._y + diff[1];
+
+	var newKey = newX + "," + newY;
+	if (!(newKey in Game.map)) { return; }
+
+	Game.display.draw(this._x, this._y, Game.map[this._x + ",", + this._y]);
+	this._x = newX;
+	this._y = newY;
+	this._draw();
+	window.removeEventListener("keydown", this);
+	Game.engine.unlock();
+
+}
 
 Game._createPlayer = function(freeCells) {
 	var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
@@ -74,3 +118,5 @@ Game._createPlayer = function(freeCells) {
 	var y = parseInt(parts[1]);
 	this.player = new Player(x, y);
 };
+
+
