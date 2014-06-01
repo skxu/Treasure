@@ -26,16 +26,6 @@ Game.State.mainMenu = {
 
 Game.State.login = {
 	enter: function() {
-
-	},
-
-	exit: function() {
-		Game.userid.remove();
-	},
-
-	render: function(display) {
-		display.drawText(1,3, "Login");
-		display.drawText(40,3, "Register");
 		Game.userid = new CanvasInput({
 			canvas: Game.canvas,
 			id: "userid",
@@ -46,14 +36,23 @@ Game.State.login = {
 			fontSize: 12,
 			fontColor: "#fff",
 			backgroundColor: "#000",
-
-
 		});
+	},
+
+	exit: function() {
+		Game.userid.remove();
+		Game.userid = null;
+		delete Game.userid;
+	},
+
+	render: function(display) {
+		display.drawText(1,3, "Login");
+		display.drawText(40,3, "Register");
+
 	},
 
 	handleInput: function(type, data) {
 		Game.userid.render();
-		Game.userid.focus();
 		if (type === 'keyup') {
 			//if [Enter] is pressed, start game
 			if (data.keyCode === ROT.VK_RETURN) {

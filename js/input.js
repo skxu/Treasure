@@ -57,7 +57,7 @@
     self._hasFocus = false;
     self._selection = [0, 0];
     self._wasOver = false;
-    //self._focusInput = null;
+    self._inputFocus = null;
     self._mouseMoveHandler = function(e) {
         e = e || window.event;
         self.mousemove(e, self);
@@ -699,7 +699,7 @@
     focus: function(pos) {
       var self = this,
         input;
-
+      //self._inputFocus = this;
       // if this is readonly, don't allow it to get focus
       if (self._readonly) {
         return;
@@ -750,22 +750,7 @@
         isChromeMobile = (nav.indexOf('chrome') >= 0 && nav.indexOf('mobile') >= 0 && nav.indexOf('android') >= 0);
 
       // add support for mobile
-      var isMobile = (typeof window.orientation !== 'undefined');
-      if (isMobile && !isChromeMobile && document && document.createElement && (input = document.createElement('input'))) {
-        input.type = 'text';
-        input.style.opacity = 0;
-        input.style.position = 'absolute';
-        input.style.left = (self._x + self._extraX + (self._canvas ? self._canvas.offsetLeft : 0)) + 'px';
-        input.style.top = (self._y + self._extraY + (self._canvas ? self._canvas.offsetTop : 0)) + 'px';
-        input.style.width = self._width;
-        input.style.height = 0;
-        document.body.appendChild(input);
-        input.focus();
-        input.addEventListener('blur', self._blurHandler, false);
-      } else if (isMobile) {
-        self.value(prompt(self._placeHolder) || '');
-      }
-
+      
       // move the real focus to the hidden input
       var hasSelection = (self._selection[0] > 0 || self._selection[1] > 0);
       self._hiddenInput.focus();
