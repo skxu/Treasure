@@ -1,30 +1,81 @@
 
 var Game = {
-	display: null,
+	_display: null,
+	_currentState: null,
 	engine: null,
 	player: null,
+	treasure: null,
 	map: {},
 
 	init: function() {
-		ROT.DEFAULT_WIDTH = 100;
-		ROT.DEFAULT_HEIGHT = 50;
-		this.display = new ROT.Display();
-		document.body.appendChild(this.display.getContainer());
-		this._generateMap();
+		//ROT.DEFAULT_WIDTH = 100;
+		//ROT.DEFAULT_HEIGHT = 50;
+		this._display = new ROT.Display({width: 80, height: 24});
+		var game = this; //questionable
 
+		//We only want the active State to handle input
+		var bindEventToState = function(event) {
+			window.addEventListener(event, function(e) {
+				if (game._currentState !== null) {
+					game._currentState.handleInput(event, e);
+				}
+			});
+		}
+
+		//Bind keyboard inputs
+		bindEventToState('keydown');
+	    bindEventToState('keyup');
+	    bindEventToState('keypress');
+
+	},
+
+	getDisplay: function() {
+		return this._display;
+	},
+
+	switchState: function(state) {
+		//Notify previous state about switch
+		if (this._currentState !== null) {
+			this._currentState.exit();
+		}
+
+		//Clear display
+		this.getDisplay().clear();
+
+		//Set current state & render
+		this._currentState = state;
+		if (!this._currentState !== null) {
+			this._currentState.enter();
+			this._currentState.render(this._display);
+		}
+	}
+};
+
+
+window.onload = function() {
+	//Check if rot.js works on browser
+	if (!ROT.isSupported()) {
+		alert("This game isn't compatible with your browser");
+	} else {
+		//run initialization stuff
+		Game.init();
+		//Add the game to the HTML canvas
+		document.body.appendChild(Game.getDisplay().getContainer());
+		
+		//Generate the map
+		Game.generateMap();
+		Game.switchState(Game.State.mainMenu);
+
+		//Starts the scheduler engine
 		var scheduler = new ROT.Scheduler.Simple();
 		scheduler.add(this.player, true);
 		this.engine = new ROT.Engine(scheduler);
 		this.engine.start();
-
-
 	}
-}
+};
 
 
-
-
-Game._generateMap = function() {
+Game.generateMap = function() {
 	var digger = new ROT.Map.Digger();
 	var freeCells = [];
 
@@ -36,14 +87,15 @@ Game._generateMap = function() {
 		}
 		var key = x + "," + y;
 		freeCells.push(key);
-		//this.map[key] = String.fromCharCode(183);
-		this.map[key] = " ";
+		this.map[key] = String.fromCharCode(183);
+		//this.map[key] = " ";
 	}
 	digger.create(digCallback.bind(this));
 	this._generateBoxes(freeCells);
-	this._drawWholeMap();
 	this._createPlayer(freeCells);
+	//this.drawWholeMap();
 };
+
 
 
 Game._generateBoxes = function(freeCells) {
@@ -51,17 +103,24 @@ Game._generateBoxes = function(freeCells) {
 		var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
 		var key = freeCells.splice(index, 1)[0];
 		this.map[key] = "*";
+
+		if(i == 0) {
+			this.treasure = key;
+		}
 	}
 };
 
-Game._drawWholeMap = function() {
+Game.drawWholeMap = function() {
 	for (var key in this.map) {
 		var parts = key.split(",");
 		var x = parseInt(parts[0]);
 		var y = parseInt(parts[1]);
-		this.display.draw(x, y, this.map[key]);
+		this.getDisplay().draw(x, y, this.map[key]);
 	}
 };
+
+
+
 
 var Player = function(x, y) {
 	this._x = x;
@@ -70,13 +129,24 @@ var Player = function(x, y) {
 }
 
 Player.prototype._draw = function() {
-	Game.display.draw(this._x, this._y, "@", "#ff0");
+	Game.getDisplay().draw(this._x, this._y, "@", "#ff0");
+}
+
+Player.prototype._checkBox = function() {
+	var key = this._x + "," + this._y;
+	if (Game.map[key] != "*") {
+		Game.getDisplay().draw(this._x, this._y - 2, "There is no chest here.");
+	} else if (key == Game.treasure) {
+		Game.getDisplay().draw(this._x, this._y - 2, "You found treasure.");
+	} else {
+		Game.getDisplay().draw(this._x, this._y - 2, "Nothing in this chest.");
+	}
 }
 
 Player.prototype.act = function() {
-	Game.engine.lock();
+	//Game.engine.lock();
 	//waiting for the user to input something
-	window.addEventListener("keydown", this);
+	//window.addEventListener("keydown", this);
 }
 
 Player.prototype.handleEvent = function(e) {
@@ -87,6 +157,10 @@ Player.prototype.handleEvent = function(e) {
 	keyMap[ROT.VK_DOWN] = 2;
 
 	var code = e.keyCode;
+	if (code == ROT.VK_SPACE) {
+		this._checkBox();
+		return;
+	}
 
 	//Only take valid keys
 	if (!(code in keyMap)) {
@@ -101,7 +175,7 @@ Player.prototype.handleEvent = function(e) {
 	var newKey = newX + "," + newY;
 	if (!(newKey in Game.map)) { return; }
 
-	Game.display.draw(this._x, this._y, Game.map[this._x + ",", + this._y]);
+	Game.getDisplay().draw(this._x, this._y, Game.map[this._x + ",", + this._y]);
 	this._x = newX;
 	this._y = newY;
 	this._draw();
