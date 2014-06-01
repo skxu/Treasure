@@ -11,7 +11,7 @@ Game.State.mainMenu = {
 	
 	render: function(display) {
 		display.drawText(1,1, "%c{yellow}Treasure");
-		display.drawText(1,2, "Press [Enter] to start.");
+
 	},
 
 	handleInput: function(type, data) {
@@ -24,10 +24,50 @@ Game.State.mainMenu = {
 	}
 }
 
+Game.State.login = {
+	enter: function() {
+
+	},
+
+	exit: function() {
+		Game.userid.remove();
+	},
+
+	render: function(display) {
+		display.drawText(1,3, "Login");
+		display.drawText(40,3, "Register");
+		Game.userid = new CanvasInput({
+			canvas: Game.canvas,
+			id: "userid",
+			x: 20,
+			y: 100,
+			width: 200,
+			height: 10,
+			fontSize: 12,
+			fontColor: "#fff",
+			backgroundColor: "#000",
+
+
+		});
+	},
+
+	handleInput: function(type, data) {
+		Game.userid.render();
+		Game.userid.focus();
+		if (type === 'keyup') {
+			//if [Enter] is pressed, start game
+			if (data.keyCode === ROT.VK_RETURN) {
+				Game.switchState(Game.State.mainMenu);
+			}
+		}
+	}
+
+}
+
 
 Game.State.lobby = {
 	enter: function() {
-		console.log("Entered lobby state");
+		Game.lobbyRef.push('test');
 	},
 
 	exit: function() {

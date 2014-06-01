@@ -2,6 +2,9 @@
 var Game = {
 	_display: null,
 	_currentState: null,
+	userid: null,
+	password: null,
+	canvas: null,
 	engine: null,
 	player: null,
 	treasure: null,
@@ -9,6 +12,8 @@ var Game = {
 	onlineUsersRef: null,
 	userRef: null,
 	connectedRef: null,
+	lobbyRef: null,
+	mapRef: null,
 	map: {},
 
 	init: function() {
@@ -20,7 +25,12 @@ var Game = {
 		//Set reference to database
 		this.database = new Firebase('https://treasure.firebaseio.com');
 
-		//Connect to login server
+		//Set more references
+		this.lobbyRef = this.database.child('lobby');
+
+		//Placeholder for login authentication
+
+		//Connect to users
 		this.onlineUsersRef = this.database.child('users');
 		this.userRef = this.onlineUsersRef.push();
 
@@ -69,6 +79,7 @@ var Game = {
 		if (!this._currentState !== null) {
 			this._currentState.enter();
 			this._currentState.render(this._display);
+			console.log("sw");
 		}
 	}
 };
@@ -83,10 +94,10 @@ window.onload = function() {
 		Game.init();
 		//Add the game to the HTML canvas
 		document.body.appendChild(Game.getDisplay().getContainer());
-		
+		Game.canvas = document.getElementsByTagName('canvas')[0];
 		//Generate the map
 		Game.generateMap();
-		Game.switchState(Game.State.mainMenu);
+		Game.switchState(Game.State.login);
 
 		//Starts the scheduler engine
 		var scheduler = new ROT.Scheduler.Simple();
