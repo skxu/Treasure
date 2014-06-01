@@ -69,8 +69,8 @@ window.onload = function() {
 		//Starts the scheduler engine
 		var scheduler = new ROT.Scheduler.Simple();
 		scheduler.add(this.player, true);
-		this.engine = new ROT.Engine(scheduler);
-		this.engine.start();
+		Game.engine = new ROT.Engine(scheduler);
+		Game.engine.start();
 	}
 };
 
@@ -144,7 +144,7 @@ Player.prototype._checkBox = function() {
 }
 
 Player.prototype.act = function() {
-	//Game.engine.lock();
+	Game.engine.lock();
 	//waiting for the user to input something
 	//window.addEventListener("keydown", this);
 }
