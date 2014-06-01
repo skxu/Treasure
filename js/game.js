@@ -8,7 +8,7 @@ var Game = {
 	database: null,
 	onlineUsersRef: null,
 	userRef: null,
-	connectedRef: null
+	connectedRef: null,
 	map: {},
 
 	init: function() {
@@ -22,16 +22,16 @@ var Game = {
 
 		//Connect to login server
 		this.onlineUsersRef = this.database.child('users');
-		this.userRef = onlineUsersRef.push();
+		this.userRef = this.onlineUsersRef.push();
 
 		//Add ourself to the online user list when we are connected
 		this.connectedRef = this.database.child('.info/connected');
-		connectedRef.on("value", function(snap) {
+		this.connectedRef.on("value", function(snap) {
 			if (snap.val()) {
-				userRef.set(true);
+				Game.userRef.set(true);
 
 				//Remove ourself when we disconnect
-				userRef.onDisconnect().remove();
+				Game.userRef.onDisconnect().remove();
 			}
 		});
 
