@@ -2,17 +2,20 @@
 var Game = {
 	_display: null,
 	_currentState: null,
-	userid: null,
+	userid: null, //username
+	userEmail: null, //email, used only for firebase auth
 	password: null,
-	canvas: null,
-	engine: null,
-	player: null,
-	treasure: null,
-	database: null,
-	onlineUsersRef: null,
-	userRef: null,
-	connectedRef: null,
-	lobbyRef: null,
+	canvas: null, //ctx canvas
+	engine: null, //scheduler engine
+	player: null, //player.js
+	treasure: null, //placeholder
+	database: null, // treasure.firebaseio.com
+	useridRef:null, //check if username already taken
+	onlineUsersRef: null, //online users, at /users
+	userRef: null, //reference to us within /users
+	connectedRef: null, // uses /.info/connected to check for connections
+	lobbyRef: null, //users hanging around in the lobby
+	authRef: null,  //reference to authentication server
 	mapRef: null,
 	map: {},
 
@@ -20,15 +23,17 @@ var Game = {
 		//ROT.DEFAULT_WIDTH = 100;
 		//ROT.DEFAULT_HEIGHT = 50;
 		this._display = new ROT.Display({width: 80, height: 24});
-		var game = this; //questionable
+		var game = this; //keep track of state
 
 		//Set reference to database
 		this.database = new Firebase('https://treasure.firebaseio.com');
 
 		//Set more references
 		this.lobbyRef = this.database.child('lobby');
+		this.useridRef = this.database.child('userid');
+		//placeholder login authentication server
+		
 
-		//Placeholder for login authentication
 
 		//Connect to users
 		this.onlineUsersRef = this.database.child('users');
