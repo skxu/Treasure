@@ -25,6 +25,8 @@ Game.State.mainMenu = {
 }
 
 Game.State.login = {
+	refreshRender: null,
+
 	enter: function() {
 		Game.authRef = new FirebaseSimpleLogin(Game.database, function(error, user) {
 			if (error) {
@@ -63,7 +65,7 @@ Game.State.login = {
 			backgroundColor: "#111",
 			boxShadow: "0px 0px 0px rgba(255, 255, 255, 1)",
 		});
-		
+		this.refreshRender = window.setInterval(this._refreshInputs, 500);
 	},
 
 	exit: function() {
@@ -74,9 +76,13 @@ Game.State.login = {
 		Game.password.remove();
 		Game.password = null;
 		delete Game.password;
+
+		window.clearInterval(this.refreshRender);
+
 	},
 
 	render: function(display) {
+
 		display.drawText(1,1, "%c{yellow}Treasure");
 		display.drawText(1,3, "Login");
 		display.drawText(2,5, "Username");
@@ -89,13 +95,18 @@ Game.State.login = {
 	},
 
 	handleInput: function(type, data) {
-		Game.userid.render();
-		Game.password.render();
 		if (type === 'keyup') {
 			//if [Enter] is pressed, start game
 			if (data.keyCode === ROT.VK_RETURN) {
 				var authCode = Game.authentication.login(Game.userid._value, Game.password._value, this._handleLogin);
 			}
+		}
+	},
+
+	_refreshInputs: function() {
+		if (Game.userid !== undefined && Game.userid !== null && Game.password !== undefined && Game.password !== null) {
+			Game.userid.render();
+			Game.password.render();
 		}
 	},
 

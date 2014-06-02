@@ -84,7 +84,6 @@ var Game = {
 		if (!this._currentState !== null) {
 			this._currentState.enter();
 			this._currentState.render(this._display);
-			console.log("sw");
 		}
 	}
 };
