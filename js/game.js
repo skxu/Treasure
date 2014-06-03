@@ -97,8 +97,13 @@ window.onload = function() {
 		//run initialization stuff
 		Game.init();
 		//Add the game to the HTML canvas
-		document.body.appendChild(Game.getDisplay().getContainer());
+		document.getElementById('canvasDiv').appendChild(Game.getDisplay().getContainer());
 		Game.canvas = document.getElementsByTagName('canvas')[0];
+
+		//Center canvas
+		var style = Game.canvas.style;
+		style.marginLeft = "auto";
+		style.marginRight = "auto";
 		//Generate the map
 		Game.generateMap();
 		Game.switchState(Game.State.login);

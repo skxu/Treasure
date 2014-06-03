@@ -1,87 +1,14 @@
-html, body {
-    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-    box-sizing: border-box; 
-    height: 100%;
+body {
+    background-color:#111111;
+}
+
+#canvasDiv {
+    text-align: center;
     width: 100%;
-    background-color: rgb(50,50,50);
-    position:absolute;
-    overflow: hidden;
+    margin: 0px auto;
+    background-color: "black";
 }
 
-
-
-#playerHP {
-    position: absolute;
-    bottom: 10%;
-    left: 20px;
-    z-index: 500;
-    height: 20px;
-    width: 500px;
+#title {
+    color:#CFD63E;
 }
-
-#opponentHP {
-    position: absolute;
-    bottom: 10%;
-    right: 20px;
-    z-index: 500;
-    height: 20px;
-    width: 500px;
-}
-
-#namebox {
-    background-color: rgb(50,50,50);
-    position: relative;
-    
-    margin-top: auto;
-}
-
-.jumbotron {
-    margin-bottom: 0px;
-    background-color: rgb(50,50,50);
-    color: #FFFFFF;
-}
-
-.nopadding {
-   padding: 0 !important;
-   margin: 0 !important;
-}
-
-.container{
-    width: 100%;
-	height: 100%;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
-    overflow: hidden;
-}
-.row {
-    height: inherit;
-    position: relative;
-    width: 100%;
-	overflow:hidden;
-    margin-left: 0px;
-    margin-right: 0px;
-    overflow: hidden;
-}
-
-.nospace {
-	left-margin:0px;
-}
-
-.navbar {
-    height: 50px;
-    margin-bottom: 0px;
-}
-
-#console {
-	height: inherit;
-    border: 0px solid #DDD;
-    border-radius: 0px;
-    border-bottom-right-radius: 0px;
-    margin-top: 0px;
-    margin-left: 0px;
-    background-color: rgb(50,50,50);
-    overflow: hidden;
-}
-

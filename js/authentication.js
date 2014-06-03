@@ -21,6 +21,7 @@ Game.authentication.login = function(userid, pw, callback) {
 		return;
 	}
 	var val;
+	//firebase requires to login via email, so just temporarily converting usernames to IDs
 	Game.userEmail = userid + "@fakemail.com";
 	var idRef = Game.database.child("userid/"+userid);
 	idRef.once('value', val = function(snapshot) {
@@ -52,8 +53,8 @@ Game.authentication.login = function(userid, pw, callback) {
 					}
 				}
 			});
-			//Mark your presence!
-			idRef.push();
+			//Mark your presence! (basically claim userid as taken so others can't register with it)
+			idRef.push("poop");
 			
 		} else {
 			//userid exists, attempt to login
