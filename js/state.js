@@ -11,6 +11,8 @@ Game.State.mainMenu = {
 	
 	render: function(display) {
 		display.drawText(1,1, "%c{yellow}Treasure");
+		display.drawText(1,2, "Placeholder for mainMenu");
+		display.drawText(1,3, "Press %c{green}[Enter] %c{white}to continue.");
 
 	},
 
@@ -184,6 +186,8 @@ Game.State.lobby = {
 
 	render: function(display) {
 		display.drawText(1,1, "Lobby");
+		display.drawText(1,2, "Placeholder for lobby");
+		display.drawText(1,3, "Press %c{green}[Enter] %c{white}to continue.");
 	},
 
 	handleInput: function(type, data) {
