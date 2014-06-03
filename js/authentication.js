@@ -13,10 +13,12 @@ Game.authentication = {};
 Game.authentication.login = function(userid, pw, callback) {
 	if (userid === '' || userid === null) {
 		callback(0);
+		return;
 	}
 
 	if (pw === '' || pw === null) {
 		callback(1);
+		return;
 	}
 	var val;
 	Game.userEmail = userid + "@fakemail.com";
@@ -28,29 +30,39 @@ Game.authentication.login = function(userid, pw, callback) {
 			Game.authRef.createUser(Game.userEmail, pw, function(error, user) {
 				if (!error) {
 					console.log("Created user " + user.email);
+					callback(2);
 				} else {
 					console.log(error);
+					switch(error.code) {
+						case "INVALID_PASSWORD":
+							Game._display.drawText(2,13, "%c{yellow} Incorrect Login %c{black}wwwwwww %c{grey}(if you're trying to register it means the username is taken)", 25);
+							break;
+						case "INVALID_EMAIL":
+							Game._display.drawText(2,13, "%c{yellow} Invalid Username %c{black}www wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",25);
+							break;
+						case "INVALID_ORIGIN":
+							Game._display.drawText(2,13, "%c{yellow} Unauthorized request origin %c{black}www wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",25);
+							break;
+						case "USER_DENIED":
+							Game._display.drawText(2,13, "%c{yellow} Login denied. Are you %c{red}banned? %c{black}www wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",25);
+							break;
+						default:
+							Game._display.drawText(2,13, "%c{yellow}Unknown Error %c{black}www wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",25);
+							break;
+					}
 				}
 			});
 			//Mark your presence!
-			idRef.push("poop");
-			/*
-			Game.authRef.login('password', {
-				email: Game.userEmail,
-				password: pw,
-				rememberMe: true
-			});
-			*/
-			callback(2);
+			idRef.push();
+			
 		} else {
 			//userid exists, attempt to login
 			console.log("userid exists, attempting to login");
 			Game.authRef.login('password', {
 				email: Game.userEmail,
 				password: pw,
-				rememberMe: true
+				rememberMe: false
 			});
-			callback(3);
 		}
 	});
 

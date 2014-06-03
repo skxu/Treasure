@@ -30,12 +30,29 @@ Game.State.login = {
 	enter: function() {
 		Game.authRef = new FirebaseSimpleLogin(Game.database, function(error, user) {
 			if (error) {
-				alert(error);
+				console.log(error);
+				switch(error.code) {
+					case "INVALID_PASSWORD":
+						Game._display.drawText(2,13, "%c{yellow} Incorrect Login %c{black}wwwwwww %c{grey}(if you're trying to register it means the username is taken)", 25);
+						break;
+					case "INVALID_EMAIL":
+						Game._display.drawText(2,13, "%c{yellow} Invalid Username %c{black}www wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",25);
+						break;
+					case "INVALID_ORIGIN":
+						Game._display.drawText(2,13, "%c{yellow} Unauthorized request origin %c{black}www wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",25);
+						break;
+					case "USER_DENIED":
+						Game._display.drawText(2,13, "%c{yellow} Login denied. Are you %c{red}banned? %c{black}www wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",25);
+						break;
+					default:
+						Game._display.drawText(2,13, "%c{yellow}Unknown Error %c{black}www wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",25);
+						break;
+				}
 				return;
 			}
 			if (user) {
 				//Already logged in				
-				//Game.switchState(Game.State.mainMenu);
+				Game.switchState(Game.State.mainMenu);
 			} else {
 				//do the login
 			}
@@ -87,10 +104,8 @@ Game.State.login = {
 		display.drawText(1,3, "Login");
 		display.drawText(2,5, "Username");
 		display.drawText(2,9, "Password");
-		display.drawText(40,3, "If you don't have an account,");
-		display.drawText(40,4, "pick a username and password");
-		display.drawText(40,5, "and login with it by pressing");
-		display.drawText(40,6, "%c{green}[Enter]");
+		display.drawText(40,3, "%c{red}How to Register");
+		display.drawText(40,5, "If you don't have an account, pick a username and password and login with it by pressing %c{green}[Enter]", 30);
 
 	},
 
@@ -114,19 +129,26 @@ Game.State.login = {
 		switch(authCode) {
 			case 0:
 				console.log("blank userid");
+				Game._display.drawText(2,13, "%c{yellow} Username field is blank %c{black}wwww wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", 25);
 				break;
 			case 1:
 				console.log("blank pw");
+				Game._display.drawText(2,13, "%c{yellow} Password field is blank %c{black}wwww wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", 25);
 				break;
 			case 2:
 				console.log("created new account");
+				Game.authRef.login('password', {
+					email: Game.userEmail,
+					password: Game.password._value,
+					rememberMe: false
+				});
 				break;
 			case 3:
 				console.log("logged in");
-				Game.switchState(Game.State.mainMenu);
+				//Game.switchState(Game.State.mainMenu);
 				break;
 			default:
-				console.log(authCode);
+				console.log("got unknown authCode at _handleLogin: ", authCode);
 				break;
 		}
 	}
