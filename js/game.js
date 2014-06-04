@@ -22,7 +22,7 @@ var Game = {
 	init: function() {
 		//ROT.DEFAULT_WIDTH = 100;
 		//ROT.DEFAULT_HEIGHT = 50;
-		this._display = new ROT.Display({width: 80, height: 24});
+		this._display = new ROT.Display({width: 100, height: 30});
 		var game = this; //keep track of state
 
 		//Set reference to database

@@ -13,6 +13,9 @@ Game.State.mainMenu = {
 		display.drawText(1,1, "%c{yellow}Treasure");
 		display.drawText(1,2, "Placeholder for mainMenu");
 		display.drawText(1,3, "Press %c{green}[Enter] %c{white}to continue.");
+		display.drawText(1,4, "%c{grey}Multiplayer Lobby (placeholder)");
+		display.drawText(1,5, "%c{grey}Singleplayer (placeholder)");
+		display.drawText(1,6, "%c{grey}Change password (placeholder)");
 
 	},
 
@@ -188,6 +191,9 @@ Game.State.lobby = {
 		display.drawText(1,1, "Lobby");
 		display.drawText(1,2, "Placeholder for lobby");
 		display.drawText(1,3, "Press %c{green}[Enter] %c{white}to continue.");
+		display.drawText(1,4, "%c{grey}Join Public Game");
+		display.drawText(1,5, "%c{grey}Join Private Game");
+		display.drawText(1,6, "%c{grey}Create Game");
 	},
 
 	handleInput: function(type, data) {
@@ -202,6 +208,8 @@ Game.State.lobby = {
 
 
 Game.State.play = {
+	_map: null,
+
 	enter: function() {
 		console.log("Entered play state");
 	},
