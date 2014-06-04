@@ -212,6 +212,9 @@ Game.State.play = {
 
 	enter: function() {
 		console.log("Entered play state");
+		var mapList = Game.Map.generateCellularMap(80,24);
+		console.log(mapList);
+		this._map = new Game.Map(mapList[1]);
 	},
 
 	exit: function() {
@@ -219,7 +222,7 @@ Game.State.play = {
 	},
 
 	render: function(display) {
-		Game.drawWholeMap();
+		Game.Map.drawWholeMap(this._map);
 		Game.player._draw();
 	},
 

@@ -105,7 +105,7 @@ window.onload = function() {
 		style.marginLeft = "auto";
 		style.marginRight = "auto";
 		//Generate the map
-		Game.generateMap();
+		//Game.generateMap();
 		Game.switchState(Game.State.login);
 
 		//Starts the scheduler engine
@@ -117,58 +117,6 @@ window.onload = function() {
 };
 
 
-Game.generateMap = function() {
-	var digger = new ROT.Map.Digger();
-	var freeCells = [];
 
-	var digCallback = function(x, y, value) {
-		if (value) { 
-			var key = x + "," + y;
-			this.map[key] = "#";
-			return;
-		}
-		var key = x + "," + y;
-		freeCells.push(key);
-		this.map[key] = String.fromCharCode(183);
-		//this.map[key] = " ";
-	}
-	digger.create(digCallback.bind(this));
-	this._generateBoxes(freeCells);
-	this._createPlayer(freeCells);
-	//this.drawWholeMap();
-};
-
-
-
-Game._generateBoxes = function(freeCells) {
-	for (var i=0; i<10; i++) {
-		var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-		var key = freeCells.splice(index, 1)[0];
-		this.map[key] = "*";
-
-		if(i == 0) {
-			this.treasure = key;
-		}
-	}
-};
-
-Game.drawWholeMap = function() {
-	for (var key in this.map) {
-		var parts = key.split(",");
-		var x = parseInt(parts[0]);
-		var y = parseInt(parts[1]);
-		this.getDisplay().draw(x, y, this.map[key]);
-	}
-};
-
-
-Game._createPlayer = function(freeCells) {
-	var index = Math.floor(ROT.RNG.getUniform() * freeCells.length);
-	var key = freeCells.splice(index, 1)[0];
-	var parts = key.split(",");
-	var x = parseInt(parts[0]);
-	var y = parseInt(parts[1]);
-	this.player = new Player(x, y);
-};
 
 
