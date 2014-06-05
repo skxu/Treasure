@@ -179,8 +179,11 @@ Game.State.register = {
 }
 
 Game.State.lobby = {
+	menu: ["Join Public Game", "Join Private Game", "Create Game"],
+	currentIndex: 0,
 	enter: function() {
-		Game.lobbyRef.push('test');
+		console.log("Entered lobby state");
+		//Game.lobbyRef.push('test');
 	},
 
 	exit: function() {
@@ -199,12 +202,121 @@ Game.State.lobby = {
 	handleInput: function(type, data) {
 		if (type === 'keyup') {
 			if (data.keyCode === ROT.VK_RETURN) {
-				Game.switchState(Game.State.play);
+				switch(this.currentIndex) {
+					case 0: //Join public game
+						Game.switchState(Game.State.gameList);
+						break;
+					case 1: //Join private game
+						break;
+					case 2: //Create game
+						Game.switchState(Game.State.createGame);
+						break;
+				}
+				//Game.switchState(Game.State.play);
 			}
 		}
 	}
 }
 
+Game.State.gameList = {
+	enter: function() {
+		console.log("Entered gameList state");
+	},
+
+	exit: function() {
+		console.log("Exited gameList state");
+	},
+
+	render: function(display) {
+
+	},
+
+	handleInput: function(type, data) {
+
+	}
+}
+
+Game.State.createGame = {
+	currentHorizIndex: 0,
+	currentVertIndex: 0,
+	horizMax: [1,2],
+	vertMax: 1,
+
+	enter: function() {
+		console.log("Entered createGame state");
+	},
+
+	exit: function() {
+		console.log("Exited createGame state");
+	},
+
+	render: function(display) {
+		display.drawText(1,1, "Create Game");
+		display.drawText(4, 4, "Game Publicity:");
+		display.drawText(4, 6, "Hardcore:");
+		if (this.currentHorizIndex === 0 && this.currentVertIndex === 0) {
+			display.drawText(23, 4, "%c{black}%b{lightgrey}PUBLIC");
+		} else {
+			display.drawText(23, 4, "PUBLIC");
+		}
+
+		if (this.currentHorizIndex === 1 && this.currentVertIndex === 0) {
+			display.drawText(35, 4, "%c{black}%b{lightgrey}PRIVATE");
+		} else {
+			display.drawText(35, 4, "PRIVATE");
+		}
+
+		if (this.currentHorizIndex === 0 && this.currentVertIndex === 1) {
+			display.drawText(23,6, "%c{black}%b{lightgrey}YES");
+		} else {
+			display.drawText(23,6, "YES");
+		}
+
+		if (this.currentHorizIndex === 1 && this.currentVertIndex === 1) {
+			display.drawText(29,6, "%c{black}%b{lightgrey}MAYBE");
+		} else {
+			display.drawText(29,6, "MAYBE");
+		}
+
+		if (this.currentHorizIndex === 2 && this.currentVertIndex === 1) {
+			display.drawText(35,6, "%c{black}%b{lightgrey}NO");
+		} else {
+			display.drawText(35,6, "NO");
+		}
+	},
+
+	handleInput: function(type, data) {
+		if (type === 'keydown') {
+			if (data.keyCode === ROT.VK_LEFT) {
+				if (this.currentHorizIndex > 0) {
+					this.currentHorizIndex -= 1;
+					this.render(Game.getDisplay());
+				}
+			} else if (data.keyCode === ROT.VK_RIGHT) {
+				if (this.currentHorizIndex < this.horizMax[this.currentVertIndex]) {
+					this.currentHorizIndex += 1;
+					this.render(Game.getDisplay());
+				}
+			} else if (data.keyCode === ROT.VK_DOWN) {
+				if (this.currentVertIndex < this.vertMax) {
+					this.currentVertIndex += 1;
+					this.currentHorizIndex = 0;
+					this.render(Game.getDisplay());
+				}
+			} else if (data.keyCode === ROT.VK_UP) {
+				if (this.currentVertIndex > 0) {
+					this.currentVertIndex -= 1;
+					this.currentHorizIndex = 0;
+					this.render(Game.getDisplay());
+				}
+			} else if (data.keyCode === ROT.VK_RETURN) {
+				console.log("horizIndex, vertIndex", this.currentHorizIndex, this.currentVertIndex);
+			}
+
+		}
+
+	}
+}
 
 
 Game.State.play = {
