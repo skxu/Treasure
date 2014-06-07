@@ -2,7 +2,8 @@
 var Game = {
 	_display: null,
 	_currentState: null,
-	userid: null, //username
+	userid: null, //username field
+	username: null,
 	userEmail: null, //email, used only for firebase auth
 	password: null,
 	canvas: null, //ctx canvas
@@ -15,6 +16,8 @@ var Game = {
 	userRef: null, //reference to us within /users
 	connectedRef: null, // uses /.info/connected to check for connections
 	lobbyRef: null, //users hanging around in the lobby
+	gameListRef: null, //list of public games
+	currentGameRef: null, //your own game
 	authRef: null,  //reference to authentication server
 	mapRef: null,
 	map: {},
@@ -32,8 +35,7 @@ var Game = {
 		this.lobbyRef = this.database.child('lobby');
 		this.useridRef = this.database.child('userid');
 		//placeholder login authentication server
-		
-
+		this.gameListRef = this.database.child('gameList');
 
 		//Connect to users
 		this.onlineUsersRef = this.database.child('users');
@@ -115,8 +117,4 @@ window.onload = function() {
 		Game.engine.start();
 	}
 };
-
-
-
-
 

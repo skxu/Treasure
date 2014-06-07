@@ -105,7 +105,8 @@ Game.State.login = {
 				return;
 			}
 			if (user) {
-				//Already logged in				
+				//Already logged in
+				Game.username = user.email.split("@")[0];	
 				Game.switchState(Game.State.mainMenu);
 			} else {
 				//do the login
@@ -335,7 +336,7 @@ Game.State.createGame = {
 
 	exit: function() {
 		console.log("Exited createGame state");
-		
+
 	},
 
 	render: function(display) {
@@ -412,7 +413,12 @@ Game.State.createGame = {
 			} 
 		} else if (type === 'keyup') {
 			if (data.keyCode === ROT.VK_RETURN) {
-				console.log("horizIndex, vertIndex", this.currentHorizIndex, this.currentVertIndex);
+				if (this.currentVertIndex === 3) {
+					Game.currentGameRef = Game.gameListRef.push({"publicity":this.currentHorizIndex[0], "hardcore":this.currentHorizIndex[1], "gameplay":this.currentHorizIndex[2]});
+					var userList = [Game.username];
+					Game.currentGameRef.update({"userList":userList});
+				}
+				Game.switchState(Game.State.play);
 			}
 		}
 
@@ -450,7 +456,5 @@ Game.State.play = {
 Game.State.lose = {
 
 };
-Game.State.newGame = {
 
-};
 
