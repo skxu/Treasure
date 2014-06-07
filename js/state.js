@@ -335,6 +335,7 @@ Game.State.createGame = {
 
 	exit: function() {
 		console.log("Exited createGame state");
+		
 	},
 
 	render: function(display) {
