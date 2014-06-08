@@ -1,10 +1,11 @@
 Game.Map = function(tiles) {
-	this._tiles = tiles;
+	this._tiles = tiles[1];
+	this._freeCells = tiles[0]
 
 	//cache width & height
 	//based on tile dimensions
-	this._width = tiles.length;
-	this._height = tiles[0].length;
+	this._width = tiles[1].length;
+	this._height = tiles[1][0].length;
 };
 
 Game.Map.prototype.getWidth = function() {
@@ -84,7 +85,7 @@ Game.Map.generateCellularMap = function(width, height, p, iter) {
 	var mapList = [freeCells, map];
 	mapList = this._generateBoxes(mapList);
 	mapList = this._createPlayer(mapList);
-	console.log(mapList);
+	//console.log(mapList);
 	return mapList;
 
 }

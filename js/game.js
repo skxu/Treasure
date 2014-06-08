@@ -21,11 +21,15 @@ var Game = {
 	authRef: null,  //reference to authentication server
 	mapRef: null,
 	map: {},
+	currentMap: {},
+	world: {},
+	width: 100,
+	height: 30,
 
 	init: function() {
 		//ROT.DEFAULT_WIDTH = 100;
 		//ROT.DEFAULT_HEIGHT = 50;
-		this._display = new ROT.Display({width: 100, height: 30});
+		this._display = new ROT.Display({width: this.width, height: this.height});
 		var game = this; //keep track of state
 
 		//Set reference to database

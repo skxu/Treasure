@@ -300,6 +300,8 @@ Game.State.lobby = {
 					case 2: //Create game
 						Game.switchState(Game.State.createGame);
 						break;
+					default:
+						break;
 				}
 			}
 		}
@@ -417,8 +419,14 @@ Game.State.createGame = {
 					Game.currentGameRef = Game.gameListRef.push({"publicity":this.currentHorizIndex[0], "hardcore":this.currentHorizIndex[1], "gameplay":this.currentHorizIndex[2]});
 					var userList = [Game.username];
 					Game.currentGameRef.update({"userList":userList});
+
+					//generating the world
+					Game.world = new Game.World();
+					Game.currentMap = Game.world.dungeon;
+					Game.currentGameRef.update({"world":Game.world});
+					Game.switchState(Game.State.play);
 				}
-				Game.switchState(Game.State.play);
+				
 			}
 		}
 
@@ -431,9 +439,8 @@ Game.State.play = {
 
 	enter: function() {
 		console.log("Entered play state");
-		var mapList = Game.Map.generateCellularMap(80,24);
-		console.log(mapList);
-		this._map = new Game.Map(mapList[1]);
+		//var mapList = Game.Map.generateCellularMap(80,24);
+		this._map = Game.currentMap;
 	},
 
 	exit: function() {
