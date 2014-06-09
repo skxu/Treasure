@@ -92,8 +92,6 @@ Game.Map.generateCellularMap = function(width, height, p, iter) {
 
 
 
-
-
 Game.Map._generateBoxes = function(mapList) {
 	freeCells = mapList[0];
 	map = mapList[1];
