@@ -310,6 +310,14 @@ Game.State.lobby = {
 
 Game.State.gameList = {
 	enter: function() {
+		Game.gameListRef.on('child_added', function(child, prevChildName) {
+			var gameplay = child.child('gameplay').val();
+			var hardcore = child.child('hardcore').val();
+			var publicity = child.child('publicity').val();
+			var userRef = child.child('userList').val(); //array of users
+			console.log(userRef);
+			console.log(gameplay);
+		});
 		console.log("Entered gameList state");
 	},
 
