@@ -1,10 +1,14 @@
 Treasure
 ========
 
-roguelike multiplayer dungeon crawler
+roguelike multiplayer dungeon crawler  
+
 with a focus on loot/treasure
 
 
-Built using
-Firebase
-ROT.js
+Built using  
+
+Firebase  
+
+ROT.js  
+
