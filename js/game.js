@@ -18,6 +18,7 @@ var Game = {
 	lobbyRef: null, //users hanging around in the lobby
 	gameListRef: null, //list of public games
 	currentGameRef: null, //your own game
+	currentGameUsersRef: null, //users in your game, including you
 	authRef: null,  //reference to authentication server
 	mapRef: null,
 	map: {},

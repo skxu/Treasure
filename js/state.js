@@ -310,13 +310,26 @@ Game.State.lobby = {
 
 Game.State.gameList = {
 	enter: function() {
-		Game.gameListRef.on('child_added', function(child, prevChildName) {
-			var gameplay = child.child('gameplay').val();
-			var hardcore = child.child('hardcore').val();
-			var publicity = child.child('publicity').val();
-			var userRef = child.child('userList').val(); //array of users
-			console.log(userRef);
-			console.log(gameplay);
+		var gameList = [];
+		Game.gameListRef.on('child_added', function(data, prevChild) {
+			gameList.push(data.name());
+			var gameplay = data.child('gameplay').val();
+			var hardcore = data.child('hardcore').val();
+			var publicity = data.child('publicity').val();
+			var userRef = data.child('userList').ref(); //users
+			var users = [];
+			
+			userRef.on('child_added', function(data, prevChild) {
+				users.push(data.val());
+				console.log("child added to users list");
+				console.log(users);
+			});
+			userRef.on('child_removed', function(data) {
+				index = users.indexOf(data.val())
+				users.splice(index, 1);
+				console.log("child removed from users list");
+				console.log(users);
+			});
 		});
 		console.log("Entered gameList state");
 	},
@@ -425,9 +438,9 @@ Game.State.createGame = {
 			if (data.keyCode === ROT.VK_RETURN) {
 				if (this.currentVertIndex === 3) {
 					Game.currentGameRef = Game.gameListRef.push({"publicity":this.currentHorizIndex[0], "hardcore":this.currentHorizIndex[1], "gameplay":this.currentHorizIndex[2]});
-					var userList = [Game.username];
-					Game.currentGameRef.update({"userList":userList});
-
+					Game.currentGameUsersRef = Game.currentGameRef.child('userList');
+					Game.currentGameUsersRef.push(Game.username);
+					Game.currentGameUsersRef.onDisconnect().remove();
 					//generating the world
 					Game.world = new Game.World();
 					Game.currentMap = Game.world.dungeon;
