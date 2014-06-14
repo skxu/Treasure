@@ -310,25 +310,26 @@ Game.State.lobby = {
 
 Game.State.gameList = {
 	enter: function() {
-		var gameList = [];
+		var gameList = {};
 		Game.gameListRef.on('child_added', function(data, prevChild) {
-			gameList.push(data.name());
-			var gameplay = data.child('gameplay').val();
-			var hardcore = data.child('hardcore').val();
-			var publicity = data.child('publicity').val();
+			gameplay = data.child('gameplay').val();
+			hardcore = data.child('hardcore').val();
+			publicity = data.child('publicity').val();
 			var userRef = data.child('userList').ref(); //users
-			var users = [];
+			users = [];
+			var newGame = new Game.gameAttributes(publicity, hardcore, gameplay, users);
+			var snapshot = data;
+			gameList[snapshot.name()] = newGame;
 			
 			userRef.on('child_added', function(data, prevChild) {
-				users.push(data.val());
+				gameList[snapshot.name()].addUser(data.val());
 				console.log("child added to users list");
-				console.log(users);
+				console.log(gameList);
 			});
 			userRef.on('child_removed', function(data) {
-				index = users.indexOf(data.val())
-				users.splice(index, 1);
+				gameList[snapshot.name()].removeUser(data.val());
 				console.log("child removed from users list");
-				console.log(users);
+				console.log(gameList);
 			});
 		});
 		console.log("Entered gameList state");
