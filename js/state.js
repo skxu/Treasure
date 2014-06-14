@@ -232,8 +232,8 @@ Game.State.lobby = {
 	//menu: ["Join Public Game", "Join Private Game", "Create Game"],
 	currentVertIndex: 0,
 	currentHorizIndex: 0,
-	horizMax: [0,0,0],
-	vertMax: 2,
+	horizMax: [0,0,0,0],
+	vertMax: 3,
 	enter: function() {
 		console.log("Entered lobby state");
 		//Game.lobbyRef.push('test');
@@ -245,21 +245,25 @@ Game.State.lobby = {
 
 	render: function(display) {
 		display.drawText(1,1, "Lobby");
-		display.drawText(1,2, "Placeholder for lobby");
 		if (this.currentVertIndex === 0) {
-			display.drawText(42, 8, Game.util.highlight("Join Public Game"));
-		} else  {
-			display.drawText(42, 8, "Join Public Game");
+			display.drawText(42, 8, Game.util.highlight("Continue Last Game"));
+		} else {
+			display.drawText(42, 8, "Continue Last Game");
 		}
 		if (this.currentVertIndex === 1) {
-			display.drawText(42, 11, Game.util.highlight("Join Private Game"));
-		} else {
-			display.drawText(42, 11, "Join Private Game");
+			display.drawText(42, 11, Game.util.highlight("Join Public Game"));
+		} else  {
+			display.drawText(42, 11, "Join Public Game");
 		}
 		if (this.currentVertIndex === 2) {
-			display.drawText(42, 14, Game.util.highlight("Create Game"));
+			display.drawText(42, 14, Game.util.highlight("Join Private Game"));
 		} else {
-			display.drawText(42, 14, "Create Game");
+			display.drawText(42, 14, "Join Private Game");
+		}
+		if (this.currentVertIndex === 3) {
+			display.drawText(42, 17, Game.util.highlight("Create Game"));
+		} else {
+			display.drawText(42, 17, "Create Game");
 		}
 		display.drawText(39,28, "Press %c{green}[Enter] %c{white}to continue.");
 	},
@@ -292,12 +296,14 @@ Game.State.lobby = {
 		} else if (type === 'keyup') {
 			if (data.keyCode === ROT.VK_RETURN) {
 				switch(this.currentVertIndex) {
-					case 0: //Join public game
+					case 0: //Continue last game
+						break;
+					case 1: //Join public game
 						Game.switchState(Game.State.gameList);
 						break;
-					case 1: //Join private game
+					case 2: //Join private game
 						break;
-					case 2: //Create game
+					case 3: //Create game
 						Game.switchState(Game.State.createGame);
 						break;
 					default:
@@ -340,6 +346,7 @@ Game.State.gameList = {
 	},
 
 	render: function(display) {
+		display.drawText(1,1, "Public Game List");
 
 	},
 
