@@ -22,6 +22,11 @@ Game.Menu = function(itemList, align) {
 	this._currentHorizIndex = 0;
 	this._currentVertIndex = 0;
 
+	this._horizStart = 42;
+	this._horizSpacing = 10;
+	this._vertStart = 8;
+	this._vertSpacing = 3;
+
 }
 
 /*
@@ -82,4 +87,11 @@ Game.Menu.prototype.moveUp = function() {
 	}
 }
 
-Game.Menu.prototype.
+Game.Menu.render = function() {
+	display = Game.getDisplay();
+	for (vertIndex=0; vertIndex<this._vertMax; vertIndex++) {
+		for (horizIndex=0; horizIndex<this._horizMax[vertIndex]) {
+			//render all the items in itemList
+		}
+	}
+}
