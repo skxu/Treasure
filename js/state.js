@@ -315,9 +315,11 @@ Game.State.lobby = {
 }
 
 Game.State.gameList = {
+	games: {},
 	enter: function() {
-		var gameList = {};
-		Game.gameListRef.on('child_added', function(data, prevChild) {
+		Game.gameListMetaRef.on('child_added', function(data, prevChild) {
+			gameList = Game.State.gameList.games;
+			
 			gameplay = data.child('gameplay').val();
 			hardcore = data.child('hardcore').val();
 			publicity = data.child('publicity').val();
@@ -326,6 +328,7 @@ Game.State.gameList = {
 			var newGame = new Game.gameAttributes(publicity, hardcore, gameplay, users);
 			var snapshot = data;
 			gameList[snapshot.name()] = newGame;
+			console.log(gameList);
 			
 			userRef.on('child_added', function(data, prevChild) {
 				gameList[snapshot.name()].addUser(data.val());
@@ -446,9 +449,16 @@ Game.State.createGame = {
 			if (data.keyCode === ROT.VK_RETURN) {
 				if (this.currentVertIndex === 3) {
 					Game.currentGameRef = Game.gameListRef.push({"publicity":this.currentHorizIndex[0], "hardcore":this.currentHorizIndex[1], "gameplay":this.currentHorizIndex[2]});
+					metaRef = Game.gameListMetaRef.push({"publicity":this.currentHorizIndex[0], "hardcore":this.currentHorizIndex[1], "gameplay":this.currentHorizIndex[2]});
+
+					metaUserRef = metaRef.child('userList');
 					Game.currentGameUsersRef = Game.currentGameRef.child('userList');
+					
 					Game.currentGameUsersRef.push(Game.username);
+					metaUserRef.push(Game.username);
+
 					Game.currentGameUsersRef.onDisconnect().remove();
+					metaUserRef.onDisconnect().remove();
 					//generating the world
 					Game.world = new Game.World();
 					Game.currentMap = Game.world.dungeon;

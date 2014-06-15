@@ -11,7 +11,7 @@
 * options include left & center for now, with default being left
 */
 Game.Menu = function(itemList, align) {
-	this._align = (typeof align === "undefined") "left" ? align;
+	this._align = (typeof align === "undefined") ? "left" : align;
 	this._itemList = itemList;
 	this._horizMax = [];
 	this._vertMax = itemList.length;
@@ -35,7 +35,7 @@ Game.Menu = function(itemList, align) {
 * otherwise returns the entire array
 */
 Game.Menu.prototype.getHorizMax = function(index) {
-	value = (typeof index === "undefined") ? this._horizMax ? this._horizMax[index];
+	value = (typeof index === "undefined") ? this._horizMax : this._horizMax[index];
 	return value;
 }
 
@@ -55,6 +55,7 @@ Game.Menu.prototype.moveLeft = function() {
 	if (this._currentHorizIndex > 0) {
 		this._currentHorizIndex -= 1;
 		//refresh render here
+		this.render();
 	}
 }
 
@@ -62,6 +63,7 @@ Game.Menu.prototype.moveRight = function() {
 	if (this._currentHorizIndex < this._horizMax[this._currentVertIndex]) {
 		this._currentHorizIndex += 1;
 		//refresh render here
+		this.render();
 	}
 }
 
@@ -73,6 +75,7 @@ Game.Menu.prototype.moveDown = function() {
 			this._currentHorizIndex = this._horizMax[this._currentVertIndex];
 		}
 		//refresh render here
+		this.render();
 	}
 }
 
@@ -84,14 +87,28 @@ Game.Menu.prototype.moveUp = function() {
 			this._currentHorizIndex = this._horizMax[this._currentVertIndex];
 		}
 		//refresh render here
+		this.render();
 	}
+}
+
+Game.Menu.prototype.getItem = function(vert,horiz) {
+	return this._itemList[vert][horiz];
 }
 
 Game.Menu.render = function() {
 	display = Game.getDisplay();
 	for (vertIndex=0; vertIndex<this._vertMax; vertIndex++) {
-		for (horizIndex=0; horizIndex<this._horizMax[vertIndex]) {
+		for (horizIndex=0; horizIndex<this._horizMax[vertIndex]; horizIndex++) {
 			//render all the items in itemList
+			x = this._horizStart + (this._horizSpacing*horizIndex);
+			y = this._vertStart + (this._vertSpacing*vertIndex);
+			text = this.getItem(vertIndex,horizIndex);
+			//if item is currently selected, render as highlight
+			if ((vertIndex == this._currentVertIndex) && (horizIndex == this._currentHorizIndex)) {
+				display.drawText(x, y, Game.util.setOptionHighlight(text));
+			} else {
+				display.drawText(x, y, text);
+			}
 		}
 	}
 }

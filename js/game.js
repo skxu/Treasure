@@ -17,6 +17,7 @@ var Game = {
 	connectedRef: null, // uses /.info/connected to check for connections
 	lobbyRef: null, //users hanging around in the lobby
 	gameListRef: null, //list of public games
+	gameListMetaRef: null, //list of public game metadata
 	currentGameRef: null, //your own game
 	currentGameUsersRef: null, //users in your game, including you
 	authRef: null,  //reference to authentication server
@@ -41,7 +42,8 @@ var Game = {
 		this.useridRef = this.database.child('userid');
 		//placeholder login authentication server
 		this.gameListRef = this.database.child('gameList');
-
+		this.gameListMetaRef = this.database.child('gameListMeta');
+		
 		//Connect to users
 		this.onlineUsersRef = this.database.child('users');
 		this.userRef = this.onlineUsersRef.push();
