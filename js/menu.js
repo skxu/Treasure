@@ -13,8 +13,8 @@
 Game.Menu = function(itemList, align) {
 	this._align = (typeof align === "undefined") ? "left" : align;
 	this._itemList = itemList;
-	this._horizMax = [];
 	this._vertMax = itemList.length;
+	this._horizMax = [];
 	for (index=0; index<length; index++) {
 		horizMax = itemList[index].length;
 		this._hoirzMax[index] = horizMax;
@@ -22,10 +22,14 @@ Game.Menu = function(itemList, align) {
 	this._currentHorizIndex = 0;
 	this._currentVertIndex = 0;
 
-	this._horizStart = 42;
+
+	//replace these with constants later
+	this._horizStart = 3;
 	this._horizSpacing = 10;
 	this._vertStart = 8;
 	this._vertSpacing = 3;
+
+	this._defaultHorizMax = 4;
 
 }
 

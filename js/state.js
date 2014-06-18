@@ -329,17 +329,20 @@ Game.State.gameList = {
 			var snapshot = data;
 			gameList[snapshot.name()] = newGame;
 			console.log(gameList);
-			
+			Game.State.gameList.render(Game.getDisplay());
 			userRef.on('child_added', function(data, prevChild) {
 				gameList[snapshot.name()].addUser(data.val());
 				console.log("child added to users list");
 				console.log(gameList);
+				Game.State.gameList.render(Game.getDisplay());
 			});
 			userRef.on('child_removed', function(data) {
 				gameList[snapshot.name()].removeUser(data.val());
 				console.log("child removed from users list");
 				console.log(gameList);
+				Game.State.gameList.render(Game.getDisplay());
 			});
+
 		});
 		console.log("Entered gameList state");
 	},
@@ -349,7 +352,22 @@ Game.State.gameList = {
 	},
 
 	render: function(display) {
-		display.drawText(1,1, "Public Game List");
+		display.drawText(1,1, "Public Open Game List");
+		counter = 0;
+		for (var key in Game.State.gameList.games) {
+			gameAttr = Game.State.gameList.games[key];
+			pub = gameAttr.getPublicity();
+			if (pub == 1) continue;
+			hardcore = gameAttr.getHardcore();
+			gameplay = gameAttr.getGameplay();
+			totalUsers = gameAttr.getUserList().length;
+			if (totalUsers > 3) continue;
+			display.drawText(2,5 + counter, "Game: "+key);
+			display.drawText(4,6 + counter, "Hardcore: "+hardcore);
+			display.drawText(4,7 + counter, "Gameplay: "+gameplay);
+			display.drawText(4,8 + counter, "Users: "+totalUsers+"/4");
+			counter += 4;
+		}
 
 	},
 
