@@ -316,6 +316,7 @@ Game.State.lobby = {
 
 Game.State.gameList = {
 	games: {},
+	currentIndex: 0,
 	enter: function() {
 		Game.gameListMetaRef.on('child_added', function(data, prevChild) {
 			gameList = Game.State.gameList.games;
@@ -348,30 +349,57 @@ Game.State.gameList = {
 	},
 
 	exit: function() {
+		Game.gameListMetaRef.off();
 		console.log("Exited gameList state");
 	},
 
 	render: function(display) {
 		display.drawText(1,1, "Public Open Game List");
-		counter = 0;
+		counterX = 0;
+		counterY = 0;
 		for (var key in Game.State.gameList.games) {
 			gameAttr = Game.State.gameList.games[key];
 			pub = gameAttr.getPublicity();
 			if (pub == 1) continue;
-			hardcore = gameAttr.getHardcore();
-			gameplay = gameAttr.getGameplay();
+			hardcore = (gameAttr.getHardcore()) ? "yes" : "no";
+			gameplay = (gameAttr.getGameplay()) ? "take turns" : "FFA";
 			totalUsers = gameAttr.getUserList().length;
 			if (totalUsers > 3) continue;
-			display.drawText(2,5 + counter, "Game: "+key);
-			display.drawText(4,6 + counter, "Hardcore: "+hardcore);
-			display.drawText(4,7 + counter, "Gameplay: "+gameplay);
-			display.drawText(4,8 + counter, "Users: "+totalUsers+"/4");
-			counter += 4;
+			gameNum = (counterX*5) + counterY;
+			if (((counterX*5) + counterY) == Game.State.gameList.currentIndex) {
+				display.drawText(2 + counterX*22, 5 + counterY*4, Game.util.setOptionHighlight("Game #"+gameNum));
+				display.drawText(4 + counterX*22, 6 + counterY*4, Game.util.highlight("Hardcore: "+hardcore));
+				display.drawText(4 + counterX*22, 7 + counterY*4, Game.util.highlight("Gameplay: "+gameplay));
+				display.drawText(4 + counterX*22, 8 + counterY*4, Game.util.highlight("Users: "+totalUsers+"/4"));
+			} else {
+				display.drawText(2 + counterX*22, 5 + counterY*4, "Game #"+gameNum);
+				display.drawText(4 + counterX*22, 6 + counterY*4, "Hardcore: "+hardcore);
+				display.drawText(4 + counterX*22, 7 + counterY*4, "Gameplay: "+gameplay);
+				display.drawText(4 + counterX*22, 8 + counterY*4, "Users: "+totalUsers+"/4");
+			}
+			counterY += 1;
+			if (counterY == 5) {
+				counterY = 0;
+				counterX += 1;
+			}
 		}
 
 	},
 
 	handleInput: function(type, data) {
+		if (type === 'keydown') {
+			if (data.keyCode === ROT.VK_UP) {
+				if (this.currentIndex > 0) {
+					this.currentIndex -= 1;
+					this.render(Game.getDisplay());
+				}
+			} else if (data.keyCode === ROT.VK_DOWN) {
+				if (this.currentIndex < Object.keys(Game.State.gameList.games).length - 1) {
+					this.currentIndex += 1;
+					this.render(Game.getDisplay());
+				}
+			}
+		}
 
 	}
 }
@@ -409,15 +437,15 @@ Game.State.createGame = {
 		}
 
 		if (this.currentHorizIndex[1] === 0) {
-			display.drawText(23,6, "%c{black}%b{lightgrey}YES");
+			display.drawText(23,6, "%c{black}%b{lightgrey}NO");
 		} else {
-			display.drawText(23,6, "YES");
+			display.drawText(23,6, "NO");
 		}
 
 		if (this.currentHorizIndex[1] === 1) {
-			display.drawText(35,6, "%c{black}%b{lightgrey}NO");
+			display.drawText(35,6, "%c{black}%b{lightgrey}YES");
 		} else {
-			display.drawText(35,6, "NO");
+			display.drawText(35,6, "YES");
 		}
 
 		if (this.currentHorizIndex[2] === 0) {
