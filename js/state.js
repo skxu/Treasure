@@ -345,6 +345,12 @@ Game.State.gameList = {
 			});
 
 		});
+
+		Game.gameListMetaRef.on('child_removed', function(snapshot) {
+			delete Game.State.gameList.games[snapshot.name()];
+			Game.getDisplay().clear();
+			Game.State.gameList.render(Game.getDisplay());
+		});
 		console.log("Entered gameList state");
 	},
 
