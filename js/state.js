@@ -327,6 +327,7 @@ Game.State.gameList = {
 			gameplay = data.child('gameplay').val();
 			hardcore = data.child('hardcore').val();
 			publicity = data.child('publicity').val();
+			if (publicity == 1) return; //don't show private games
 			var userRef = data.child('userList').ref(); //users
 			users = [];
 			var newGame = new Game.gameAttributes(publicity, hardcore, gameplay, users);
@@ -368,12 +369,12 @@ Game.State.gameList = {
 		counterY = 0;
 		for (var key in Game.State.gameList.games) {
 			gameAttr = Game.State.gameList.games[key];
-			pub = gameAttr.getPublicity();
-			if (pub == 1) continue;
+			pub = gameAttr.getPublicity(); //TODO: remove this since it's guaranteed to be public
+
 			hardcore = (gameAttr.getHardcore()) ? "yes" : "no";
 			gameplay = (gameAttr.getGameplay()) ? "take turns" : "FFA";
 			totalUsers = gameAttr.getUserList().length;
-			if (totalUsers > 3) continue;
+			
 			gameNum = (counterX*5) + counterY;
 			if (((counterX*5) + counterY) == Game.State.gameList.currentIndex) {
 				display.drawText(2 + counterX*22, 5 + counterY*4, Game.util.setOptionHighlight("Game #"+gameNum));
@@ -519,11 +520,14 @@ Game.State.createGame = {
 					metaUserRef.onDisconnect().remove();
 					//generating the world
 					Game.world = new Game.World();
+
+					//set the current map
 					Game.currentMap = Game.world.dungeon;
+
+					
 					Game.currentGameRef.update({"world":Game.world});
 					Game.switchState(Game.State.play);
 				}
-				
 			} else if (data.keyCode === ROT.VK_ESCAPE || data.keyCode === ROT.VK_BACKSPACE) {
 				//TODO: pop from current state list instead of hard coding return menu
 				Game.switchState(Game.State.lobby);

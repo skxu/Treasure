@@ -48,8 +48,11 @@ Player.prototype.handleEvent = function(e) {
 	var newX = this._x + diff[0];
 	var newY = this._y + diff[1];
 
-	var newKey = newX + "," + newY;
-	if (!(newKey in Game.map)) { return; }
+	if (Game.Tile.wallTile == Game.currentMap.getTile(newX,newY)) {
+		console.log("wallTile");
+		return;
+	}
+
 
 	Game.getDisplay().draw(this._x, this._y, Game.map[this._x + ",", + this._y]);
 	this._x = newX;

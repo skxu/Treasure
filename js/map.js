@@ -91,7 +91,10 @@ Game.Map.generateCellularMap = function(width, height, p, iter) {
 }
 
 
-
+/**
+ * mapList[0] contains freeCells[][]
+ * mapList[1] contains the entire map[][]
+ */
 Game.Map._generateBoxes = function(mapList) {
 	freeCells = mapList[0];
 	map = mapList[1];
