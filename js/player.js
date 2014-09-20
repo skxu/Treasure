@@ -4,8 +4,12 @@ var Player = function(x, y) {
 	this._draw();
 }
 
-Player.prototype._draw = function() {
-	Game.getDisplay().draw(this._x, this._y, "@", "#ff0");
+Player.prototype._draw = function(color) {
+	if (color === undefined) {
+		Game.getDisplay().draw(this._x, this._y, "@", "#ff0");
+	} else {
+		Game.getDisplay().draw(this._x, this._y, "%", color);
+	}
 }
 
 Player.prototype._checkBox = function() {
@@ -48,7 +52,7 @@ Player.prototype.handleEvent = function(e) {
 	var newX = this._x + diff[0];
 	var newY = this._y + diff[1];
 
-	if (Game.Tile.wallTile == Game.currentMap.getTile(newX,newY)) {
+	if (Game.Map.getTile(newX,newY,Game.currentMap)._type == "wall") {
 		console.log("wallTile");
 		return;
 	}

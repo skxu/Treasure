@@ -1,8 +1,9 @@
-Game.gameAttributes = function(publicity, hardcore, gameplay, userList) {
+Game.gameAttributes = function(publicity, hardcore, gameplay, userList, gameID) {
 	this._publicity = publicity;
 	this._hardcore = hardcore;
 	this._gameplay = gameplay;
 	this._userList = userList;
+	this._gameID = gameID;
 }
 
 Game.gameAttributes.prototype.getPublicity = function() {
@@ -19,6 +20,10 @@ Game.gameAttributes.prototype.getGameplay = function() {
 
 Game.gameAttributes.prototype.getUserList = function() {
 	return this._userList;
+}
+
+Game.gameAttributes.prototype.getGameID = function() {
+	return this._gameID;
 }
 
 Game.gameAttributes.prototype.addUser = function(user) {

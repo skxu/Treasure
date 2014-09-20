@@ -20,6 +20,7 @@ var Game = {
 	gameListMetaRef: null, //list of public game metadata
 	currentGameRef: null, //your own game
 	currentGameUsersRef: null, //users in your game, including you
+	//userRef: null,
 	authRef: null,  //reference to authentication server
 	mapRef: null,
 	map: {},
@@ -79,7 +80,7 @@ var Game = {
 		return this._display;
 	},
 
-	switchState: function(state) {
+	switchState: function(state, param) {
 		//Notify previous state about switch
 		if (this._currentState !== null) {
 			this._currentState.exit();
@@ -91,7 +92,11 @@ var Game = {
 		//Set current state & render
 		this._currentState = state;
 		if (!this._currentState !== null) {
-			this._currentState.enter();
+			if (param !== undefined) {
+				this._currentState.enter(param);
+			} else {
+				this._currentState.enter();
+			}
 			this._currentState.render(this._display);
 		}
 	}

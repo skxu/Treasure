@@ -25,6 +25,15 @@ Game.Map.prototype.getTile = function(x, y) {
 	}
 };
 
+Game.Map.getTile = function(x,y,map) {
+	if (map === undefined) map = this;
+	if (x < 0 || x >= map._width || y < 0 || y >= map._height) {
+		return Game.Tile.nullTile;
+	} else {
+		return map._tiles[x][y] || Game.Tile.nullTile;
+	}
+}
+
 Game.Map.generateDungMap = function(width, height) {
 	var map = [];
 	var freeCells = [];
@@ -103,16 +112,16 @@ Game.Map._generateBoxes = function(mapList) {
 		var key = freeCells.splice(index, 1)[0];
 		var x = key[0];
 		var y = key[1];
-		map[x][y] = new Game.Tile(new Game.Glyph("*"));
+		map[x][y] = new Game.Tile(new Game.Glyph("*"), "box");
 	}
 	return [freeCells, map];
 };
 
 Game.Map.drawWholeMap = function(map) {
-	for (var x=0; x<map.getWidth(); x++) {
-		for (var y=0; y<map.getHeight(); y++) {
-			var glyph = map.getTile(x,y).getGlyph();
-			Game.getDisplay().draw(x,y, glyph.getChar(), glyph.getForeground(), glyph.getBackground());
+	for (var x=0; x<map._width; x++) {
+		for (var y=0; y<map._height; y++) {
+			var glyph = Game.Map.getTile(x,y,map)._glyph;
+			Game.getDisplay().draw(x,y, glyph._char, glyph._foreground, glyph._background);
 		}
 	}
 };
@@ -128,3 +137,13 @@ Game.Map._createPlayer = function(mapList) {
 	Game.player = new Player(x, y);
 	return [freeCells, map];
 };
+
+
+Game.Map._createPlayerOnMap = function(mapObj) {
+		var index = Math.floor(ROT.RNG.getUniform() * mapObj._freeCells.length);
+	var key = mapObj._freeCells.splice(index, 1)[0];
+	var x = key[0];
+	var y = key[1];
+	Game.player = new Player(x, y);
+	return mapObj;
+}

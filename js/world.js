@@ -3,7 +3,8 @@ Game.World = function() {
 	//this.dungeonList = null;
 	var mapList = Game.Map.generateCellularMap(Game.width, Game.height);
 	this.dungeon = new Game.Map(mapList);
-	
+	this.players = [];
+
 	//generate towns, etc
 	Game.world = this;
 };

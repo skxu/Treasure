@@ -318,7 +318,7 @@ Game.State.lobby = {
 }
 
 Game.State.gameList = {
-	games: {},
+	games: {}, //contains a list of games
 	currentIndex: 0,
 	enter: function() {
 		Game.gameListMetaRef.on('child_added', function(data, prevChild) {
@@ -327,10 +327,11 @@ Game.State.gameList = {
 			gameplay = data.child('gameplay').val();
 			hardcore = data.child('hardcore').val();
 			publicity = data.child('publicity').val();
+			gameID = data.child('gameID').val();
 			if (publicity == 1) return; //don't show private games
 			var userRef = data.child('userList').ref(); //users
 			users = [];
-			var newGame = new Game.gameAttributes(publicity, hardcore, gameplay, users);
+			var newGame = new Game.gameAttributes(publicity, hardcore, gameplay, users, gameID);
 			var snapshot = data;
 			gameList[snapshot.name()] = newGame;
 			console.log(gameList);
@@ -339,7 +340,8 @@ Game.State.gameList = {
 				gameList[snapshot.name()].addUser(data.val());
 				console.log("child added to users list");
 				console.log(gameList);
-				Game.State.gameList.render(Game.getDisplay());
+				Game._currentState.render(Game.getDisplay());
+				
 			});
 			userRef.on('child_removed', function(data) {
 				gameList[snapshot.name()].removeUser(data.val());
@@ -360,6 +362,7 @@ Game.State.gameList = {
 
 	exit: function() {
 		Game.gameListMetaRef.off();
+		Game.userRef.off();
 		console.log("Exited gameList state");
 	},
 
@@ -409,9 +412,43 @@ Game.State.gameList = {
 					this.render(Game.getDisplay());
 				}
 			}
-		} else if (type === 'keyup' && (data.keyCode === ROT.VK_ESCAPE || data.keyCode === ROT.VK_BACKSPACE)) {
-			//TODO: pop from current state list instead of hard coding return menu
-			Game.switchState(Game.State.lobby);
+		} else if (type === 'keyup') {
+			if (data.keyCode === ROT.VK_ESCAPE || data.keyCode === ROT.VK_BACKSPACE) {
+				//TODO: pop from current state list instead of hard coding return menu
+				Game.switchState(Game.State.lobby);
+			} else if (data.keyCode === ROT.VK_RETURN) {
+				//selected a game
+				metaID = Object.keys(Game.State.gameList.games)[this.currentIndex];
+				//get some game attributes from the meta reference
+				gameAttr = Game.State.gameList.games[metaID];
+				gameID = gameAttr.getGameID();
+
+				//set references
+				metaRef = Game.gameListMetaRef.child(metaID);
+				Game.currentGameRef = Game.gameListRef.child(gameID);
+				//let the world know we entered the game
+				metaUserRef = metaRef.child('userList');
+				Game.currentGameUsersRef = Game.currentGameRef.child('userList');
+				
+				Game.currentGameUsersRef.push(Game.username);
+				metaUserRef.push(Game.username);
+
+				Game.currentGameUsersRef.onDisconnect().remove();
+				metaUserRef.onDisconnect().remove();
+
+				//set current map
+				
+				Game.currentGameRef.child('world').on('value', function(snap) {
+					console.log(snap.val());
+					Game.world = snap.val();
+					Game.currentMap = Game.world.dungeon;
+					Game.Map._createPlayerOnMap(Game.currentMap);
+					Game.switchState(Game.State.play);
+				});
+				
+				
+				
+			}
 		}
 
 	}
@@ -508,7 +545,7 @@ Game.State.createGame = {
 			if (data.keyCode === ROT.VK_RETURN) {
 				if (this.currentVertIndex === 3) {
 					Game.currentGameRef = Game.gameListRef.push({"publicity":this.currentHorizIndex[0], "hardcore":this.currentHorizIndex[1], "gameplay":this.currentHorizIndex[2]});
-					metaRef = Game.gameListMetaRef.push({"publicity":this.currentHorizIndex[0], "hardcore":this.currentHorizIndex[1], "gameplay":this.currentHorizIndex[2]});
+					metaRef = Game.gameListMetaRef.push({"gameID":Game.currentGameRef.name(), "publicity":this.currentHorizIndex[0], "hardcore":this.currentHorizIndex[1], "gameplay":this.currentHorizIndex[2]});
 
 					metaUserRef = metaRef.child('userList');
 					Game.currentGameUsersRef = Game.currentGameRef.child('userList');
@@ -524,7 +561,7 @@ Game.State.createGame = {
 					//set the current map
 					Game.currentMap = Game.world.dungeon;
 
-					
+
 					Game.currentGameRef.update({"world":Game.world});
 					Game.switchState(Game.State.play);
 				}
@@ -545,6 +582,19 @@ Game.State.play = {
 		console.log("Entered play state");
 		//var mapList = Game.Map.generateCellularMap(80,24);
 		this._map = Game.currentMap;
+		Game.currentGameUsersRef.on("child_added", function(data, prevChild) {
+			console.log(data)
+			//gameList[snapshot.name()].addUser(data.val());
+			//console.log("child added to users list");
+			//console.log(gameList);
+			//Game.State.gameList.render(Game.getDisplay());
+		});
+		Game.currentGameUsersRef.on('child_removed', function(data) {
+			//gameList[snapshot.name()].removeUser(data.val());
+			//console.log("child removed from users list");
+			//console.log(gameList);
+			//Game.State.gameList.render(Game.getDisplay());
+		});
 	},
 
 	exit: function() {
@@ -554,6 +604,9 @@ Game.State.play = {
 	render: function(display) {
 		Game.Map.drawWholeMap(this._map);
 		Game.player._draw();
+		for (var player in Game.world.players) {
+
+		}
 	},
 
 	handleInput: function(type, data) {

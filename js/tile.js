@@ -1,5 +1,6 @@
-Game.Tile = function(glyph) {
+Game.Tile = function(glyph, type) {
 	this._glyph = glyph;
+	this._type = type;
 };
 
 Game.Tile.prototype.getGlyph = function() {
@@ -7,7 +8,7 @@ Game.Tile.prototype.getGlyph = function() {
 }
 
 //tile that is out of bounds
-Game.Tile.nullTile = new Game.Tile(new Game.Glyph());
+Game.Tile.nullTile = new Game.Tile(new Game.Glyph(), "null");
 
-Game.Tile.floorTile = new Game.Tile(new Game.Glyph('.'));
-Game.Tile.wallTile = new Game.Tile(new Game.Glyph('#', 'goldenrod'));
+Game.Tile.floorTile = new Game.Tile(new Game.Glyph('.'), "floor");
+Game.Tile.wallTile = new Game.Tile(new Game.Glyph('#', 'goldenrod'), "wall");
