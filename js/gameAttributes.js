@@ -31,6 +31,7 @@ Game.gameAttributes.prototype.addUser = function(user) {
 }
 
 Game.gameAttributes.prototype.removeUser = function(user) {
-	index = users.indexOf(user);
+	index = this._userList.indexOf(user);
+	console.log("index of leaver", index);
 	this._userList.splice(index, 1);	
 }

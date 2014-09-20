@@ -344,9 +344,10 @@ Game.State.gameList = {
 				
 			});
 			userRef.on('child_removed', function(data) {
+				console.log("val() data of child removed", data.val());
 				gameList[snapshot.name()].removeUser(data.val());
 				console.log("child removed from users list");
-				console.log(gameList);
+				console.log(gameList[snapshot.name()]);
 				Game._currentState.render(Game.getDisplay());
 			});
 
@@ -362,7 +363,6 @@ Game.State.gameList = {
 
 	exit: function() {
 		Game.gameListMetaRef.off();
-		Game.userRef.off();
 		console.log("Exited gameList state");
 	},
 
@@ -430,11 +430,11 @@ Game.State.gameList = {
 				metaUserRef = metaRef.child('userList');
 				Game.currentGameUsersRef = Game.currentGameRef.child('userList');
 				
-				Game.currentGameUsersRef.push(Game.username);
-				metaUserRef.push(Game.username);
+				var myUserRef = Game.currentGameUsersRef.push(Game.username);
+				var myMetaRef = metaUserRef.push(Game.username);
 
-				Game.currentGameUsersRef.onDisconnect().remove();
-				metaUserRef.onDisconnect().remove();
+				myUserRef.onDisconnect().remove();
+				myMetaRef.onDisconnect().remove();
 
 				//set current map
 				
@@ -550,11 +550,11 @@ Game.State.createGame = {
 					metaUserRef = metaRef.child('userList');
 					Game.currentGameUsersRef = Game.currentGameRef.child('userList');
 					
-					Game.currentGameUsersRef.push(Game.username);
-					metaUserRef.push(Game.username);
+					var myUserRef = Game.currentGameUsersRef.push(Game.username);
+					var myMetaRef = metaUserRef.push(Game.username);
 
-					Game.currentGameUsersRef.onDisconnect().remove();
-					metaUserRef.onDisconnect().remove();
+					myUserRef.onDisconnect().remove();
+					myMetaRef.onDisconnect().remove();
 					//generating the world
 					Game.world = new Game.World();
 
