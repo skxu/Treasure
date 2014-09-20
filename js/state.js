@@ -347,7 +347,7 @@ Game.State.gameList = {
 				gameList[snapshot.name()].removeUser(data.val());
 				console.log("child removed from users list");
 				console.log(gameList);
-				Game.State.gameList.render(Game.getDisplay());
+				Game._currentState.render(Game.getDisplay());
 			});
 
 		});
