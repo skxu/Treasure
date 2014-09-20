@@ -309,6 +309,9 @@ Game.State.lobby = {
 					default:
 						break;
 				}
+			} else if (data.keyCode === ROT.VK_ESCAPE) {
+				//Pressed escape, TODO: go up one menu // pop from state list (currently hard coded) 
+				Game.switchState(Game.State.mainMenu);
 			}
 		}
 	}
@@ -405,6 +408,9 @@ Game.State.gameList = {
 					this.render(Game.getDisplay());
 				}
 			}
+		} else if (type === 'keyup' && (data.keyCode === ROT.VK_ESCAPE || data.keyCode === ROT.VK_BACKSPACE)) {
+			//TODO: pop from current state list instead of hard coding return menu
+			Game.switchState(Game.State.lobby);
 		}
 
 	}
@@ -518,7 +524,10 @@ Game.State.createGame = {
 					Game.switchState(Game.State.play);
 				}
 				
-			}
+			} else if (data.keyCode === ROT.VK_ESCAPE || data.keyCode === ROT.VK_BACKSPACE) {
+				//TODO: pop from current state list instead of hard coding return menu
+				Game.switchState(Game.State.lobby);
+		}
 		}
 
 	}
