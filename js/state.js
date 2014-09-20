@@ -344,7 +344,6 @@ Game.State.gameList = {
 				
 			});
 			userRef.on('child_removed', function(data) {
-				console.log("val() data of child removed", data.val());
 				gameList[snapshot.name()].removeUser(data.val());
 				console.log("child removed from users list");
 				console.log(gameList[snapshot.name()]);
